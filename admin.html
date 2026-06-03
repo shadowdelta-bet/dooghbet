@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>پنل مدیریت دوغ بت</title>
+    <style>
+        body { font-family: Tahoma; background: #2c3e50; color: white; padding: 50px; text-align: center; }
+        .box { background: #34495e; padding: 30px; display: inline-block; border-radius: 10px; }
+        input, button { padding: 10px; margin: 10px; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>👑 پنل مدیریت دوغ بت</h2>
+    <p>رمز عبور ادمین را وارد کنید:</p>
+    <input type="password" id="adminPass">
+    <button onclick="login()">ورود</button>
+<div id="adminContent" style="display: none; margin-top: 20px;">
+        <h3>تنظیم دستی موجودی کاربر</h3>
+        <input type="number" id="newBalance" placeholder="موجودی جدید">
+        <button onclick="setBalance()">اعمال تغییرات</button>
+    </div>
+</div>
+<script>
+    function login() {
+        let pass = document.getElementById('adminPass').value;
+        if (pass === "doogh123") { // رمز عبور ادمین
+            document.getElementById('adminContent').style.display = "block";
+            alert("خوش آمدید مدیر!");
+        } else {
+            alert("رمز اشتباه است!");
+        }
+    }
+function setBalance() {
+        let val = document.getElementById('newBalance').value;
+        localStorage.setItem('balance', val);
+        alert("موجودی کاربر به " + val + " تغییر یافت.");
+    }
+</script>
+</body>
+</html>
