@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دوغ بت | Doogh Bet</title>
+    <style>
+        body {
+            font-family: Tahoma, sans-serif;
+            background-color: #f4f6f7;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+        h1 { color: #0056b3; }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover { background-color: #218838; }
+        .admin-link { margin-top: 20px; display: block; color: #888; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🥛 به کازینو آنلاین دوغ بت خوش آمدید!</h1>
+    <p>موجودی شما: <span id="balance">1000</span> سکه دوغ</p>
+<h3>بازی شیر یا خط (دوغ یا نوشابه!)</h3>
+    <input type="number" id="betAmount" placeholder="مبلغ شرط..." min="10">
+    <br><br>
+    <button onclick="play('شیر')">شرط روی شیر</button>
+    <button onclick="play('خط')">شرط روی خط</button>
+<p id="result"></p>
+<a href="admin.html" class="admin-link">ورود به پنل ادمین</a>
+</div>
+<script>
+    let balance = localStorage.getItem('balance') ? parseInt(localStorage.getItem('balance')) : 1000;
+    document.getElementById('balance').innerText = balance;
+function play(userChoice) {
+        let bet = parseInt(document.getElementById('betAmount').value);
+        if (isNaN(bet) || bet > balance || bet <= 0) {
+            alert("مبلغ شرط نامعتبر است!");
+            return;
+        }
+let choices = ['شیر', 'خط'];
+        let systemChoice = choices[Math.floor(Math.random() * 2)];
+if (userChoice === systemChoice) {
+            balance += bet;
+            document.getElementById('result').innerHTML = `🎉 شما بردید! سیستم آورد: ${systemChoice}. شما ${bet} سکه بردید.`;
+        } else {
+            balance -= bet;
+            document.getElementById('result').innerHTML = `😢 شما باختید! سیستم آورد: ${systemChoice}. شما ${bet} سکه باختید.`;
+        }
+localStorage.setItem('balance', balance);
+        document.getElementById('balance').innerText = balance;
+    }
+</script>
+</body>
+</html>
