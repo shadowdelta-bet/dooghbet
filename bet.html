@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دوغ‌بت VIP | سیستم ارتقا یافته با پاسخ تیکت و بسته‌های دلاری</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <style>
+        :root {
+            --bg-dark: #070d08;
+            --bg-card: #0f1c11;
+            --primary: #00ff66;
+            --primary-glow: rgba(0, 255, 102, 0.3);
+            --text-main: #f0f5f1;
+            --text-muted: #8fa393;
+            --accent: #ffd700;
+            --danger: #ff3b30;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; user-select: none; }
+        body { background-color: var(--bg-dark); color: var(--text-main); padding-bottom: 60px; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 15px; }
+        h2, h3 { color: var(--text-main); margin-bottom: 10px; }
+        
+        .btn {
+            background: linear-gradient(135deg, #00c853, #00ff66); color: #000; border: none;
+            padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s;
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 0 12px var(--primary); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { box-shadow: 0 0 12px var(--danger); }
+        .btn-sm { padding: 5px 10px; font-size: 12px; background: #222; color: #fff; border: 1px solid #444; }
+        .btn-sm:hover { background: #333; }
+
+        .card { background-color: var(--bg-card); border: 1px solid rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        input, select, textarea { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px; border-radius: 6px; width: 100%; margin-bottom: 10px; font-size: 14px; }
+        input:focus { border-color: var(--primary); outline: none; }
+
+        /* استیل جدید بسته‌های مالی */
+        .packages-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
+        .package-card { background: rgba(0,0,0,0.4); border: 2px solid #222; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .package-card:hover { border-color: #444; }
+        .package-card.selected { border-color: var(--primary); box-shadow: 0 0 10px var(--primary-glow); background: rgba(0, 255, 102, 0.05); }
+        .package-card h4 { color: var(--accent); font-size: 18px; margin-bottom: 5px; }
+        .package-card p { font-size: 12px; color: var(--text-muted); }
+
+        .bet-control-group { display: flex; gap: 5px; align-items: center; margin-bottom: 12px; width: 100%; max-width: 400px; }
+        .bet-control-group input { margin-bottom: 0; flex: 1; }
+
+        #auth-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .auth-box { background: var(--bg-card); padding: 35px; border-radius: 15px; width: 380px; border: 2px solid var(--primary); text-align: center; }
+        .auth-toggle-link { color: var(--primary); cursor: pointer; text-decoration: underline; margin-top: 12px; display: inline-block; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(15, 28, 17, 0.9); border-bottom: 1px solid var(--primary-glow); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 20px; font-weight: 900; color: var(--primary); }
+        .wallet-display { background: rgba(0,0,0,0.5); padding: 6px 12px; border-radius: 50px; border: 1px solid var(--primary); font-weight: bold; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+
+        .tabs-container { background: #0b150c; padding: 10px; border-radius: 8px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .tab-section-title { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: bold; padding-right: 5px; }
+        .tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 10px; }
+        .tabs::-webkit-scrollbar { height: 4px; }
+        .tabs::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        .tab-btn { background: rgba(255,255,255,0.04); color: var(--text-muted); border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; white-space: nowrap; }
+        .tab-btn.active { background: var(--primary); color: #000; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* المان‌های اختصاصی بازی‌ها */
+        .crash-area { height: 200px; background: #040805; border-radius: 8px; position: relative; display: flex; justify-content: center; align-items: center; border: 1px dashed var(--primary); margin-bottom: 15px; }
+        .poop-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-width: 320px; margin: 15px auto; }
+        .poop-cell { background: #1c3322; height: 55px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        .poop-cell.opened { background: var(--primary); color: #000; }
+        .poop-cell.exploded { background: var(--danger); }
+        .wheel-element { width: 160px; height: 160px; border: 6px solid var(--primary); border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: var(--accent); transition: transform 3s cubic-bezier(0.15, 0.85, 0.35, 1); background: #030704; }
+        .scratch-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 260px; margin: 15px auto; }
+        .scratch-cell { background: #333; height: 70px; display: flex; align-items: center; justify-content: center; border-radius: 6px; cursor: pointer; font-size: 20px; }
+        .slot-machine { display: flex; justify-content: center; gap: 15px; font-size: 45px; background: #050a06; padding: 15px; border-radius: 8px; border: 2px solid var(--primary); max-width: 300px; margin: 15px auto; }
+        .plinko-board { height: 220px; background: #040805; position: relative; border-radius: 8px; overflow: hidden; border: 1px solid #222; }
+        .plinko-ball { width: 12px; height: 12px; background: #ff00ff; border-radius: 50%; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); transition: all 0.2s ease; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center; font-size: 13px; }
+        th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        th { background: rgba(0,0,0,0.4); color: var(--primary); }
+
+        #admin-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: #150909; border-top: 3px solid var(--danger); max-height: 60vh; overflow-y: auto; z-index: 999; padding: 15px; display: none; }
+        .admin-toggle-btn { position: fixed; bottom: 15px; left: 15px; z-index: 1000; background: var(--danger); color: white; padding: 6px 12px; font-size: 12px; }
+        
+        .admin-ticket-item { background: #222; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-right: 4px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+    <!-- ماژول احراز هویت -->
+    <div id="auth-modal">
+        <div class="auth-box" id="register-box">
+            <h2>🍾 پلتفرم شرط‌بندی دوغ‌بت</h2>
+            <p style="margin-bottom: 15px; color: var(--text-muted); font-size:13px;">دارای ۱۰ بازی کازینویی فعال (شارژ هدیه: ۵ دوغ)</p>
+            <input type="text" id="reg-username" placeholder="نام کاربری مستقل...">
+            <input type="password" id="reg-pass" placeholder="رمز عبور...">
+            <button class="btn" style="width: 100%;" onclick="handleRegister()">ایجاد حساب کاربری</button>
+            <span class="auth-toggle-link" onclick="toggleAuthForms(false)">ورود به حساب کاربری قدیمی</span>
+        </div>
+        <div class="auth-box" id="login-box" style="display: none;">
+            <h2>🥛 ورود به پنل بازیکنان</h2>
+            <p style="margin-bottom: 15px; color: var(--text-muted); font-size:13px;">مشخصات خود را وارد کنید</p>
+            <input type="text" id="login-username" placeholder="نام کاربری...">
+            <input type="password" id="login-pass" placeholder="رمز عبور...">
+            <button class="btn" style="width: 100%;" onclick="handleLogin()">ورود امن</button>
+            <span class="auth-toggle-link" onclick="toggleAuthForms(true)">نیاز به حساب جدید دارید؟</span>
+        </div>
+    </div>
+
+    <!-- هدر -->
+    <header>
+        <div class="logo">🥛 DOUGHBET MEGA VIP</div>
+        <div class="wallet-display">
+            کاربر: <span id="display-name" style="color:var(--accent);">---</span> | 
+            موجودی: <span id="user-dough" style="color: var(--primary);">0</span> دوغ
+            <button class="btn btn-danger btn-sm" onclick="handleLogout()">خروج</button>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- سیستم ناوبری سربرگ‌ها -->
+        <div class="tabs-container">
+            <div class="tab-section-title">🎰 لیست سربرگ بازی‌های کازینویی آبعلی (۱۰ بازی)</div>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('game-crash')">📈 1. انفجار (Crash)</button>
+                <button class="tab-btn" onclick="switchTab('game-poop')">💩 2. پوپ (Poop)</button>
+                <button class="tab-btn" onclick="switchTab('game-wheel')">🎡 3. گردونه شانس</button>
+                <button class="tab-btn" onclick="switchTab('game-coin')">🪙 4. دوغ یا نوشابه</button>
+                <button class="tab-btn" onclick="switchTab('game-dice')">🎲 5. تاس آبعلی</button>
+                <button class="tab-btn" onclick="switchTab('game-scratch')">🎫 6. کارت تراشیدنی</button>
+                <button class="tab-btn" onclick="switchTab('game-slots')">🎰 7. اسلات ماشین</button>
+                <button class="tab-btn" onclick="switchTab('game-bj')">🃏 8. بلک‌جک (21)</button>
+                <button class="tab-btn" onclick="switchTab('game-plinko')">💧 9. پلینکو (Plinko)</button>
+                <button class="tab-btn" onclick="switchTab('game-hl')">🃏 10. بالا یا پایین</button>
+            </div>
+            <div class="tab-section-title">💳 حسابداری و پشتیبانی</div>
+            <div class="tabs">
+                <button class="tab-btn" style="background:#1b2e1f;" onclick="switchTab('tab-tx')">📊 سوابق تراکنش‌ها</button>
+                <button class="tab-btn" style="background:#1b2e1f;" onclick="switchTab('tab-deposit')">📥 شارژ حساب</button>
+                <button class="tab-btn" style="background:#1b2e1f;" onclick="switchTab('tab-withdraw')">📤 برداشت سود</button>
+                <button class="tab-btn" style="background:#1b2e1f;" onclick="switchTab('tab-tickets')">🎫 تیکت‌ها</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۱: انفجار ================= -->
+        <div id="game-crash" class="tab-content active">
+            <div class="card">
+                <h2>📈 بازی Crash (انفجار گازدار با برداشت اتوماتیک)</h2>
+                <div class="crash-area">
+                    <div id="crash-mult" style="font-size: 36px; font-weight: 900; color: var(--primary);">1.00x</div>
+                </div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="crash-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('crash-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('crash-bet', 0.5)">/2</button>
+                </div>
+                <label>برداشت اتوماتیک روی ضریب (اختیاری - صفر یعنی غیرفعال):</label>
+                <input type="number" id="crash-auto" value="2.00" step="0.1" style="max-width:200px;">
+                <br>
+                <button class="btn" id="crash-btn" onclick="startCrash()">ثبت شرط انفجار</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۲: پوپ ================= -->
+        <div id="game-poop" class="tab-content">
+            <div class="card">
+                <h2>💩 بازی پوپ (Poop / Mines)</h2>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="poop-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('poop-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('poop-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" id="poop-start-btn" onclick="startPoopGame()">شروع بازی پوپ</button>
+                <button class="btn btn-danger" id="poop-cashout-btn" onclick="cashoutPoop()" disabled>برداشت سود</button>
+                <div id="poop-status" style="margin-top:10px; font-weight:bold; color:var(--accent);">ضریب: 1.00x</div>
+                <div class="poop-grid" id="poop-grid-board"></div>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۳: گردونه شانس ================= -->
+        <div id="game-wheel" class="tab-content">
+            <div class="card">
+                <h2>🎡 گردونه شانس درِ بطری کازینویی</h2>
+                <div class="wheel-element" id="wheel-id">🎯</div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="wheel-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('wheel-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('wheel-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" onclick="spinWheel()">چرخاندن گردونه</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۴: دوغ یا نوشابه ================= -->
+        <div id="game-coin" class="tab-content">
+            <div class="card">
+                <h2>🪙 بازی دوغ یا نوشابه (Coin Flip)</h2>
+                <div id="coin-screen" style="font-size:24px; text-align:center; margin:15px; color:var(--accent);">؟</div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="coin-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('coin-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('coin-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" onclick="playCoin('دوغ آبعلی')">🥛 شرط روی دوغ</button>
+                <button class="btn btn-danger" onclick="playCoin('نوشابه گرم')">🥤 شرط روی نوشابه</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۵: تاس آبعلی ================= -->
+        <div id="game-dice" class="tab-content">
+            <div class="card">
+                <h2>🎲 تاس غول‌پیکر (Dice)</h2>
+                <div id="dice-result" style="font-size:20px; color:var(--accent); margin:10px 0;">برای زدن تاس شرط ببندید</div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="dice-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('dice-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('dice-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" onclick="playDice('over')">📈 بالای ۵۰</button>
+                <button class="btn btn-danger" onclick="playDice('under')">📉 زیر ۵۰</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۶: کارت تراشیدنی ================= -->
+        <div id="game-scratch" class="tab-content">
+            <div class="card">
+                <h2>🎫 کارت بخت‌آزمایی و تراشیدنی (Scratch)</h2>
+                <p>هزینه خرید کارت: ۳۰ دوغ. در صورت پیدا کردن ۳ اموجی 🥛 برنده ۳۰۰ دوغ می‌شوید!</p>
+                <button class="btn" style="margin:10px 0;" onclick="buyScratchCard()">خرید و ایجاد کارت (۳۰ دوغ)</button>
+                <div class="scratch-grid" id="scratch-box"></div>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۷: اسلات ماشین ================= -->
+        <div id="game-slots" class="tab-content">
+            <div class="card">
+                <h2>🎰 اسلات ماشین شانس آبعلی (Slots)</h2>
+                <div class="slot-machine" id="slot-screen">🥛|🥤|🍋</div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="slot-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('slot-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('slot-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" onclick="playSlots()">کشیدن اهرم اسلات</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۸: بلک‌جک ================= -->
+        <div id="game-bj" class="tab-content">
+            <div class="card">
+                <h2>🃏 بازی بلک‌جک ساده (Blackjack 21)</h2>
+                <div id="bj-board" style="background:rgba(0,0,0,0.3); padding:15px; border-radius:6px; margin-bottom:15px; font-size:14px;">
+                    دست شما: <span id="bj-user-hand" style="color:var(--primary)">0</span><br>
+                    دست کازینو: <span id="bj-dealer-hand" style="color:var(--danger)">0</span>
+                </div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="bj-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('bj-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('bj-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" id="bj-start-btn" onclick="startBJ()">توزیع کارت</button>
+                <button class="btn btn-sm" id="bj-hit-btn" onclick="hitBJ()" disabled>کارت بعدی (Hit)</button>
+                <button class="btn btn-danger btn-sm" id="bj-stand-btn" onclick="standBJ()" disabled>توقف (Stand)</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۹: پلینکو ================= -->
+        <div id="game-plinko" class="tab-content">
+            <div class="card">
+                <h2>💧 بازی پلینکو ریزشی (Plinko)</h2>
+                <div class="plinko-board">
+                    <div class="plinko-ball" id="plinko-ball-id"></div>
+                    <div style="position:absolute; bottom:5px; width:100%; display:flex; justify-content:space-around; font-size:11px; font-weight:bold; color:var(--accent);">
+                        <span>0.2x</span><span>0.5x</span><span>1.5x</span><span>0.5x</span><span>0.2x</span>
+                    </div>
+                </div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="plinko-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('plinko-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('plinko-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" onclick="playPlinko()">رها کردن توپ آبعلی</button>
+            </div>
+        </div>
+
+        <!-- ================= بازی ۱۰: بالاتر یا پایین‌تر ================= -->
+        <div id="game-hl" class="tab-content">
+            <div class="card">
+                <h2>🃏 بازی بالاتر یا پایین‌تر (Higher / Lower)</h2>
+                <div style="font-size:22px; text-align:center; margin:15px;" id="hl-card-display">کارت فعلی: ۵</div>
+                <label>مبلغ شرط:</label>
+                <div class="bet-control-group">
+                    <input type="number" id="hl-bet" value="10">
+                    <button class="btn btn-sm" onclick="adjustBet('hl-bet', 2)">X2</button>
+                    <button class="btn btn-sm" onclick="adjustBet('hl-bet', 0.5)">/2</button>
+                </div>
+                <button class="btn" onclick="playHL('higher')">⬆️ کارت بعدی بالاتر است</button>
+                <button class="btn btn-danger" onclick="playHL('lower')">⬇️ کارت بعدی پایین‌تر است</button>
+            </div>
+        </div>
+
+        <!-- ================= بخش تراکنش‌ها ================= -->
+        <div id="tab-tx" class="tab-content">
+            <div class="card">
+                <h2>📊 تاریخچه تراکنش‌های مستقل حساب کاربری شما</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>نوع عملیات</th>
+                            <th>حجم (دوغ)</th>
+                            <th>توضیحات تراکنش</th>
+                            <th>وضعیت نهایی</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tx-history-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ================= بخش شارژ حساب (بسته‌های دلاری جدید) ================= -->
+        <div id="tab-deposit" class="tab-content">
+            <div class="card">
+                <h2>📥 انتخاب بسته شارژ حساب (هر ۱۰۰ دوغ = ۱ دلار)</h2>
+                <p style="margin-bottom: 10px; color: var(--text-muted); font-size: 13px;">لطفاً ابتدا بسته مورد نظر خود را انتخاب کنید (بسته فعال رنگی می‌شود):</p>
+                
+                <div class="packages-grid">
+                    <div class="package-card" id="dep-pkg-5" onclick="selectDepositPackage(5, 500)">
+                        <h4>بسته ۵ دلاری</h4>
+                        <p>🎁 ۵۰۰ دوغ آبعلی</p>
+                    </div>
+                    <div class="package-card" id="dep-pkg-10" onclick="selectDepositPackage(10, 1000)">
+                        <h4>بسته ۱۰ دلاری</h4>
+                        <p>🎁 ۱۰۰۰ دوغ آبعلی</p>
+                    </div>
+                    <div class="package-card" id="dep-pkg-25" onclick="selectDepositPackage(25, 2500)">
+                        <h4>بسته ۲۵ دلاری</h4>
+                        <p>🎁 ۲۵۰۰ دوغ آبعلی</p>
+                    </div>
+                    <div class="package-card" id="dep-pkg-50" onclick="selectDepositPackage(50, 5000)">
+                        <h4>بسته ۵۰ دلاری</h4>
+                        <p>🎁 ۵۰۰۰ دوغ آبعلی</p>
+                    </div>
+                </div>
+
+                <input type="text" id="dep-code" placeholder="شناسه واریز فیش بانک یا کد کوپن...">
+                <button class="btn" style="width: 100%;" onclick="requestDeposit()">ثبت فیش و درخواست شارژ بسته</button>
+            </div>
+        </div>
+
+        <!-- ================= بخش برداشت سود (بسته‌های دلاری جدید) ================= -->
+        <div id="tab-withdraw" class="tab-content">
+            <div class="card">
+                <h2>📤 درخواست تسویه سود (هر ۱۰۰ دوغ = ۱ دلار)</h2>
+                <p style="margin-bottom: 10px; color: var(--text-muted); font-size: 13px;">بسته نقدی جهت واریز به حساب خود را انتخاب کنید:</p>
+
+                <div class="packages-grid">
+                    <div class="package-card" id="wd-pkg-10" onclick="selectWithdrawPackage(10, 1000)">
+                        <h4>برداشت ۱۰ دلار</h4>
+                        <p>حجم: ۱۰۰۰ دوغ</p>
+                    </div>
+                    <div class="package-card" id="wd-pkg-20" onclick="selectWithdrawPackage(20, 2000)">
+                        <h4>برداشت ۲۰ دلار</h4>
+                        <p>حجم: ۲۰۰۰ دوغ</p>
+                    </div>
+                    <div class="package-card" id="wd-pkg-50" onclick="selectWithdrawPackage(50, 5000)">
+                        <h4>برداشت ۵۰ دلار</h4>
+                        <p>حجم: ۵۰۰۰ دوغ</p>
+                    </div>
+                    <div class="package-card" id="wd-pkg-100" onclick="selectWithdrawPackage(100, 10000)">
+                        <h4>برداشت ۱۰۰ دلار</h4>
+                        <p>حجم: ۱۰۰۰۰ دوغ</p>
+                    </div>
+                </div>
+
+                <input type="text" id="wd-card" placeholder="شماره کارت ۱۶ رقمی شتاب بانکی...">
+                <button class="btn btn-danger" style="width: 100%;" onclick="requestWithdraw()">ارسال درخواست تسویه بسته</button>
+            </div>
+        </div>
+
+        <!-- ================= بخش تیکت‌ها ================= -->
+        <div id="tab-tickets" class="tab-content">
+            <div class="card">
+                <h2>🎫 ارسال تیکت پشتیبانی مالی و فنی</h2>
+                <input type="text" id="tk-title" placeholder="عنوان تیکت...">
+                <textarea id="tk-msg" rows="4" placeholder="متن تیکت شما..."></textarea>
+                <button class="btn" onclick="createNewTicket()">ثبت تیکت</button>
+            </div>
+            <div class="card">
+                <h3>تیکت‌های ارسال شده شما</h3>
+                <div id="user-tickets-box"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- پنل مدیریت مرکزی ارشد -->
+    <button class="btn admin-toggle-btn" onclick="openAdminPanel()">🛠️ کنترل پنل مرکزی ادمین</button>
+    <div id="admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:5px;">
+            <h2 style="color:var(--danger)">👑 سیستم مانیتورینگ و پاسخ‌دهی ارشد ادمین</h2>
+            <button class="btn btn-danger btn-sm" onclick="document.getElementById('admin-panel').style.display='none'">بستن</button>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <div class="card" style="background:#261212">
+                <h3>✍️ مدیریت مالی دستی بازیکنان</h3>
+                <input type="text" id="adm-user" placeholder="نام کاربری بازیکن...">
+                <input type="number" id="adm-amount" placeholder="تعداد دوغ (مثبت/منفی)...">
+                <button class="btn" style="width:100%" onclick="adminEditWallet()">تغییر فوری موجودی</button>
+                
+                <h3 style="margin-top:20px;">📥 درخواست‌های شارژ بسته‌ها</h3>
+                <div id="admin-requests-area"></div>
+            </div>
+            <div class="card" style="background:#1a1126">
+                <h3>🎫 تیکت‌های دریافتی پشتیبانی سیستم</h3>
+                <div id="admin-tickets-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // پایگاه داده لوکال
+        let db = JSON.parse(localStorage.getItem('doughbet_v4_db')) || {
+            users: {}, wallets: {}, transactions: {}, tickets: {}, allDeposits: []
+        };
+        let sessionUser = localStorage.getItem('doughbet_v4_session') || null;
+
+        let selectedDepAmount = 0; // ذخیره موقت دوغ بسته انتخابی واریز
+        let selectedWdAmount = 0;  // ذخیره موقت دوغ بسته انتخابی برداشت
+
+        function saveDB() {
+            localStorage.setItem('doughbet_v4_db', JSON.stringify(db));
+            if(sessionUser) localStorage.setItem('doughbet_v4_session', sessionUser);
+            renderUI();
+        }
+
+        function checkAuth() {
+            if(sessionUser) {
+                document.getElementById('auth-modal').style.display = 'none';
+                saveDB();
+            } else {
+                document.getElementById('auth-modal').style.display = 'flex';
+            }
+        }
+
+        function toggleAuthForms(isRegister) {
+            document.getElementById('register-box').style.display = isRegister ? 'block' : 'none';
+            document.getElementById('login-box').style.display = isRegister ? 'none' : 'block';
+        }
+
+        function handleRegister() {
+            let u = document.getElementById('reg-username').value.trim();
+            let p = document.getElementById('reg-pass').value.trim();
+            if(!u || !p) return alert('مقادیر را کامل پر کنید.');
+            if(db.users[u]) return alert('این حساب از قبل وجود دارد.');
+
+            db.users[u] = p;
+            db.wallets[u] = 5; 
+            db.transactions[u] = [{type: 'بونوس خوش‌آمد', amount: 5, detail: 'هدیه ثبت نام اولیه مستقل هر حساب', status: 'موفق'}];
+            db.tickets[u] = [];
+            
+            sessionUser = u;
+            checkAuth();
+        }
+
+        function handleLogin() {
+            let u = document.getElementById('login-username').value.trim();
+            let p = document.getElementById('login-pass').value.trim();
+            if(db.users[u] && db.users[u] === p) {
+                sessionUser = u;
+                checkAuth();
+            } else {
+                alert('نام کاربری یا کلمه عبور نادرست است.');
+            }
+        }
+
+        function handleLogout() {
+            sessionUser = null;
+            localStorage.removeItem('doughbet_v4_session');
+            window.location.reload();
+        }
+
+        function adjustBet(inputId, factor) {
+            let input = document.getElementById(inputId);
+            let current = parseFloat(input.value) || 0;
+            if(factor === 2) input.value = Math.floor(current * 2);
+            if(factor === 0.5) input.value = Math.max(1, Math.floor(current / 2));
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // توابع جدید مدیریت انتخاب بسته‌های مالی
+        function selectDepositPackage(usd, dough) {
+            document.querySelectorAll('#tab-deposit .package-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`dep-pkg-${usd}`).classList.add('selected');
+            selectedDepAmount = dough;
+        }
+
+        function selectWithdrawPackage(usd, dough) {
+            document.querySelectorAll('#tab-withdraw .package-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`wd-pkg-${usd}`).classList.add('selected');
+            selectedWdAmount = dough;
+        }
+
+        function renderUI() {
+            if(!sessionUser) return;
+            document.getElementById('display-name').innerText = sessionUser;
+            document.getElementById('user-dough').innerText = db.wallets[sessionUser] || 0;
+
+            let txBody = document.getElementById('tx-history-table');
+            txBody.innerHTML = '';
+            (db.transactions[sessionUser] || []).forEach(t => {
+                txBody.innerHTML += `<tr>
+                    <td>${t.type}</td>
+                    <td style="color:${t.amount >= 0 ? 'var(--primary)' : 'var(--danger)'}">${t.amount}</td>
+                    <td>${t.detail}</td>
+                    <td>${t.status}</td>
+                </tr>`;
+            });
+
+            let tkBox = document.getElementById('user-tickets-box');
+            tkBox.innerHTML = '';
+            (db.tickets[sessionUser] || []).forEach(t => {
+                tkBox.innerHTML += `<div style="background:rgba(0,0,0,0.2); padding:10px; border-radius:6px; margin-bottom:8px; border-right:4px solid var(--primary)">
+                    <strong>${t.title}</strong> [${t.status}]
+                    <p style="font-size:12px; color:var(--text-muted)">پیام شما: ${t.msg}</p>
+                    <p style="font-size:12px; color:var(--accent)">پاسخ مدیریت: ${t.reply}</p>
+                </div>`;
+            });
+
+            // بخش ادمین: رندر لیست واریزها
+            let admArea = document.getElementById('admin-requests-area');
+            admArea.innerHTML = '';
+            db.allDeposits.forEach((d, i) => {
+                if(d.status === 'معلق') {
+                    admArea.innerHTML += `<div style="background:#111; padding:6px; margin-bottom:5px; border-radius:4px; font-size:12px;">
+                        کاربر ${d.user} (${d.amount} دوغ) - کد فیش: ${d.code}
+                        <button class="btn btn-sm" style="padding:1px 4px;" onclick="approveDeposit(${i})">تایید شارژ</button>
+                    </div>`;
+                }
+            });
+
+            // بخش ادمین: رندر لیست تیکت‌ها جهت پاسخ‌دهی دستی
+            let admTicketsArea = document.getElementById('admin-tickets-area');
+            admTicketsArea.innerHTML = '';
+            Object.keys(db.tickets).forEach(username => {
+                db.tickets[username].forEach((ticket, index) => {
+                    if(ticket.status === 'باز' || ticket.status === 'بررسی شده') {
+                        admTicketsArea.innerHTML += `<div class="admin-ticket-item">
+                            <p style="font-size:12px;"><strong>کاربر:</strong> ${username} | <strong>موضوع:</strong> ${ticket.title}</p>
+                            <p style="color:var(--text-muted); font-size:12px; margin:5px 0;">متن: ${ticket.msg}</p>
+                            <p style="color:var(--accent); font-size:11px; margin-bottom:5px;">پاسخ فعلی: ${ticket.reply}</p>
+                            <input type="text" id="ans-text-${username}-${index}" placeholder="متن پاسخ جدید برای این کاربر..." style="padding:5px; font-size:12px; margin-bottom:5px;">
+                            <button class="btn btn-sm" style="width:100%;" onclick="adminReplyTicket('${username}', ${index})">ارسال پاسخ تیکت</button>
+                        </div>`;
+                    }
+                });
+            });
+        }
+
+        function requestDeposit() {
+            if(selectedDepAmount === 0) return alert('لطفاً ابتدا یکی از بسته‌های دلاری بالا را انتخاب نمایید.');
+            let code = document.getElementById('dep-code').value.trim();
+            if(!code) return alert('شناسه فیش بانکی اجباری است.');
+            
+            db.allDeposits.push({ user: sessionUser, amount: selectedDepAmount, code: code, status: 'معلق' });
+            db.transactions[sessionUser].push({ type: 'واریز بسته دلاری', amount: selectedDepAmount, detail: `کد پیگیری بسته: ${code}`, status: 'در انتظار تایید ادمین' });
+            alert('درخواست شارژ بسته به پنل ادمین فرستاده شد.');
+            saveDB();
+        }
+
+        function approveDeposit(index) {
+            let req = db.allDeposits[index];
+            req.status = 'تایید شد';
+            db.wallets[req.user] = (db.wallets[req.user] || 0) + req.amount;
+            let idx = db.transactions[req.user].findIndex(t => t.type === 'واریز بسته دلاری' && t.status === 'در انتظار تایید ادمین');
+            if(idx !== -1) db.transactions[req.user][idx].status = 'موفقیت‌آمیز';
+            alert('بسته واریزی کاربر تایید و موجودی اضافه شد.');
+            saveDB();
+        }
+
+        function requestWithdraw() {
+            if(selectedWdAmount === 0) return alert('لطفاً ابتدا یکی از بسته‌های برداشت بالا را انتخاب نمایید.');
+            let card = document.getElementById('wd-card').value.trim();
+            if(!card) return alert('شماره کارت برای واریز الزامی است.');
+            if(db.wallets[sessionUser] < selectedWdAmount) return alert('موجودی دوغ شما برای برداشت این بسته کافی نیست.');
+            
+            db.wallets[sessionUser] -= selectedWdAmount;
+            db.transactions[sessionUser].push({ type: 'برداشت بسته دلاری', amount: -selectedWdAmount, detail: `واریز به کارت شتاب: ${card}`, status: 'کارت به کارت شد' });
+            alert('درخواست برداشت بسته با موفقیت ثبت و فورا واریز شد.');
+            saveDB();
+        }
+
+        function createNewTicket() {
+            let title = document.getElementById('tk-title').value.trim();
+            let msg = document.getElementById('tk-msg').value.trim();
+            if(!title || !msg) return alert('فیلدها پر شوند.');
+            db.tickets[sessionUser].push({ title: title, msg: msg, reply: 'در انتظار پاسخ کارشناس آبعلی...', status: 'باز' });
+            alert('تیکت شما با موفقیت به بخش مدیریت ارسال شد.');
+            saveDB();
+        }
+
+        // تابع پاسخ‌دهی ادمین به تیکت کاربر
+        function adminReplyTicket(username, index) {
+            let replyText = document.getElementById(`ans-text-${username}-${index}`).value.trim();
+            if(!replyText) return alert('متن پاسخ نمی‌تواند خالی باشد.');
+            
+            db.tickets[username][index].reply = replyText;
+            db.tickets[username][index].status = 'پاسخ داده شده';
+            alert(`پاسخ شما برای کاربر ${username} با موفقیت ثبت شد.`);
+            saveDB();
+        }
+
+        function openAdminPanel() {
+            if(prompt('رمز عبور ادمین ارشد:') === 'adminadminadmin') {
+                document.getElementById('admin-panel').style.display = 'block';
+                renderUI();
+            } else {
+                alert('کد امنیتی اشتباه است.');
+            }
+        }
+
+        function adminEditWallet() {
+            let targetUser = document.getElementById('adm-user').value.trim();
+            let amt = parseInt(document.getElementById('adm-amount').value);
+            if(!db.users[targetUser]) return alert('چنین کاربری ثبت نام نکرده است.');
+            db.wallets[targetUser] = (db.wallets[targetUser] || 0) + amt;
+            db.transactions[targetUser].push({ type: 'اصلاحیه ادمین', amount: amt, detail: 'تغییرات دستی از پنل مرکزی ارشد ادمین', status: 'موفق' });
+            alert('موجودی حساب کاربر با موفقیت دستکاری شد.');
+            saveDB();
+        }
+
+        // ================= بازی ۱: کِرَش با برداشت اتوماتیک =================
+        let crashInterval, currentMult = 1.00, isCrashRunning = false, crashBetAmt = 0;
+        function startCrash() {
+            let btn = document.getElementById('crash-btn');
+            let autoLimit = parseFloat(document.getElementById('crash-auto').value) || 0;
+            if(!isCrashRunning) {
+                crashBetAmt = parseInt(document.getElementById('crash-bet').value);
+                if(!crashBetAmt || crashBetAmt <= 0 || db.wallets[sessionUser] < crashBetAmt) return alert('موجودی ناکافی!');
+                db.wallets[sessionUser] -= crashBetAmt; saveStateOnly();
+                isCrashRunning = true; currentMult = 1.00;
+                btn.innerText = "Cashout (برداشت سود)"; btn.className = "btn btn-danger";
+                
+                let crashPoint = (Math.random() < 0.65) ? (Math.random() * 0.3 + 1.02) : (Math.random() * 3 + 1.3);
+                crashInterval = setInterval(() => {
+                    currentMult += 0.05;
+                    document.getElementById('crash-mult').innerText = currentMult.toFixed(2) + "x";
+                    
+                    if(autoLimit > 0 && currentMult >= autoLimit) {
+                        cashoutCrashSuccess(autoLimit);
+                    } else if(currentMult >= crashPoint) {
+                        clearInterval(crashInterval);
+                        document.getElementById('crash-mult').innerText = "💥 انفجار در " + currentMult.toFixed(2) + "x";
+                        isCrashRunning = false; btn.innerText = "ثبت شرط انفجار"; btn.className = "btn";
+                        db.transactions[sessionUser].push({ type: 'بازی انفجار', amount: -crashBetAmt, detail: 'بستن دیرهنگام شرط (انفجار شیشه)', status: 'پوچ' });
+                        saveDB();
+                    }
+                }, 100);
+            } else {
+                cashoutCrashSuccess(currentMult);
+            }
+        }
+        function cashoutCrashSuccess(mult) {
+            clearInterval(crashInterval);
+            let win = Math.floor(crashBetAmt * mult);
+            db.wallets[sessionUser] += win;
+            db.transactions[sessionUser].push({ type: 'بازی انفجار', amount: (win - crashBetAmt), detail: `برداشت اتوماتیک/دستی موفق در ضریب ${mult.toFixed(2)}x`, status: 'موفق' });
+            alert(`برنده شدید! مبلغ دریافتی: ${win} دوغ`);
+            isCrashRunning = false;
+            let btn = document.getElementById('crash-btn');
+            btn.innerText = "ثبت شرط انفجار"; btn.className = "btn";
+            saveDB();
+        }
+        function saveStateOnly() { localStorage.setItem('doughbet_v4_db', JSON.stringify(db)); document.getElementById('user-dough').innerText = db.wallets[sessionUser]; }
+
+        // ================= بازی ۲: پوپ =================
+        let poopActive = false, poopBet = 0, poopMultiplier = 1.00, poopMines = [];
+        function startPoopGame() {
+            poopBet = parseInt(document.getElementById('poop-bet').value);
+            if(!poopBet || poopBet <= 0 || db.wallets[sessionUser] < poopBet) return alert('موجودی نامعتبر');
+            db.wallets[sessionUser] -= poopBet; poopActive = true; poopMultiplier = 1.00;
+            document.getElementById('poop-cashout-btn').disabled = false;
+            document.getElementById('poop-start-btn').disabled = true;
+            poopMines = Array(25).fill(false);
+            let bCount = 0; while(bCount < 9) { let r = Math.floor(Math.random() * 25); if(!poopMines[r]) { poopMines[r] = true; bCount++; } }
+            let grid = document.getElementById('poop-grid-board'); grid.innerHTML = '';
+            for(let i=0; i<25; i++) grid.innerHTML += `<div class="poop-cell" id="pcell-${i}" onclick="clickPoopCell(${i})">؟</div>`;
+            saveStateOnly();
+        }
+        function clickPoopCell(i) {
+            if(!poopActive) return;
+            let cell = document.getElementById(`pcell-${i}`);
+            if(cell.classList.contains('opened') || cell.classList.contains('exploded')) return;
+            if(poopMines[i]) {
+                cell.innerText = '🥤'; cell.classList.add('exploded'); poopActive = false;
+                document.getElementById('poop-cashout-btn').disabled = true;
+                document.getElementById('poop-start-btn').disabled = false;
+                db.transactions[sessionUser].push({ type: 'بازی پوپ', amount: -poopBet, detail: 'برخورد به گاز سمی نوشابه سیاه', status: 'باخت' });
+                alert('شکست خوردید! به نوشابه گازدار برخورد کردید.'); saveDB();
+            } else {
+                cell.innerText = '🥛'; cell.classList.add('opened'); poopMultiplier += 0.40;
+                document.getElementById('poop-status').innerText = `ضریب: ${poopMultiplier.toFixed(2)}x`;
+            }
+        }
+        function cashoutPoop() {
+            if(!poopActive) return;
+            let win = Math.floor(poopBet * poopMultiplier); db.wallets[sessionUser] += win;
+            db.transactions[sessionUser].push({ type: 'بازی پوپ', amount: (win - poopBet), detail: `خروج در ضریب ${poopMultiplier.toFixed(2)}x`, status: 'موفق' });
+            poopActive = false; document.getElementById('poop-cashout-btn').disabled = true; document.getElementById('poop-start-btn').disabled = false;
+            saveDB();
+        }
+
+        // ================= بازی ۳: گردونه شانس =================
+        function spinWheel() {
+            let bet = parseInt(document.getElementById('wheel-bet').value);
+            if(!bet || bet <= 0 || db.wallets[sessionUser] < bet) return alert('موجودی کافی نیست');
+            db.wallets[sessionUser] -= bet;
+            let w = document.getElementById('wheel-id'); w.style.transform = "rotate("+ (Math.random() * 360 + 1440) +"deg)";
+            setTimeout(() => {
+                let r = Math.random(), msg = 'پوچ (0x)', win = 0;
+                if(r > 0.75) { msg = 'برد (2x)'; win = bet * 2; }
+                else if(r > 0.50) { msg = 'برگشت شرط (1x)'; win = bet; }
+                w.innerText = msg; db.wallets[sessionUser] += win;
+                db.transactions[sessionUser].push({ type: 'گردونه شانس', amount: (win - bet), detail: `نتیجه گردونه: ${msg}`, status: 'موفق' });
+                alert(`نتیجه گردونه: ${msg}`); saveDB();
+            }, 3000);
+        }
+
+        // ================= بازی ۴: دوغ یا نوشابه =================
+        function playCoin(choice) {
+            let bet = parseInt(document.getElementById('coin-bet').value);
+            if(!bet || bet <= 0 || db.wallets[sessionUser] < bet) return alert('اعتبار کافی نیست');
+            db.wallets[sessionUser] -= bet;
+            let win = Math.random() < 0.38; 
+            let res = choice === 'دوغ آبعلی' ? (win ? 'دوغ آبعلی' : 'نوشابه گرم') : (win ? 'نوشابه گرم' : 'دوغ آبعلی');
+            document.getElementById('coin-screen').innerText = res;
+            if(win) { db.wallets[sessionUser] += bet * 2; alert('برنده شدید! ۲ برابر شد.'); } else { alert('باختید!'); }
+            db.transactions[sessionUser].push({ type: 'دوغ یا نوشابه', amount: win ? bet : -bet, detail: `انتخاب شما: ${choice} | برآمد: ${res}`, status: 'پایان یافته' });
+            saveDB();
+        }
+
+        // ================= بازی ۵: تاس آبعلی =================
+        function playDice(mode) {
+            let bet = parseInt(document.getElementById('dice-bet').value);
+            if(!bet || bet <= 0 || db.wallets[sessionUser] < bet) return alert('موجودی کم است');
+            db.wallets[sessionUser] -= bet;
+            let roll = Math.random() < 0.38 ? (mode === 'over' ? Math.floor(Math.random()*49)+51 : Math.floor(Math.random()*50)+1) : (mode === 'over' ? Math.floor(Math.random()*50)+1 : Math.floor(Math.random()*49)+51);
+            let win = (mode === 'over' && roll > 50) || (mode === 'under' && roll <= 50);
+            document.getElementById('dice-result').innerText = `عدد تاس: ${roll}`;
+            if(win) { db.wallets[sessionUser] += bet * 2; alert('برد!'); } else { alert('باخت!'); }
+            db.transactions[sessionUser].push({ type: 'تاس آبعلی', amount: win ? bet : -bet, detail: `شرط روی ${mode} | عدد تاس: ${roll}`, status: 'پایان یافته' });
+            saveDB();
+        }
+
+        // ================= بازی ۶: کارت تراشیدنی =================
+        let scratchCard = [];
+        function buyScratchCard() {
+            if(db.wallets[sessionUser] < 30) return alert('حداقل ۳۰ دوغ نیاز دارید.');
+            db.wallets[sessionUser] -= 30;
+            let box = document.getElementById('scratch-box'); box.innerHTML = ''; scratchCard = [];
+            let items = Math.random() < 0.1 ? ['🥛','🥛','🥛','🥤','🥤','🍋','🍋','🥤','🍋'] : ['🥛','🥛','🥤','🥤','🥤','🍋','🍋','🥤','🍋'];
+            items.sort(() => Math.random() - 0.5);
+            for(let i=0; i<9; i++) {
+                scratchCard.push({ v: items[i], s: false });
+                box.innerHTML += `<div class="scratch-cell" id="scell-${i}" onclick="clickScratch(${i})">؟</div>`;
+            }
+            saveStateOnly();
+        }
+        function clickScratch(i) {
+            if(scratchCard.length === 0 || scratchCard[i].s) return;
+            scratchCard[i].s = true; let cell = document.getElementById(`scell-${i}`);
+            cell.innerText = scratchCard[i].v; cell.style.background = '#152b1a';
+            if(scratchCard.filter(c => c.s).length === 9) {
+                let win = scratchCard.filter(c => c.v === '🥛').length >= 3;
+                if(win) { db.wallets[sessionUser] += 300; alert('تبریک! جک‌پات ۳۰۰ دوغی را بردید!'); } else { alert('کارت پوچ بود.'); }
+                db.transactions[sessionUser].push({ type: 'کارت تراشیدنی', amount: win ? 270 : -30, detail: win ? 'برنده جک‌پات ۳ تایی دوغ' : 'کارت پوچ', status: 'پایان' });
+                scratchCard = []; saveDB();
+            }
+        }
+
+        // ================= بازی ۷: اسلات ماشین =================
+        function playSlots() {
+            let bet = parseInt(document.getElementById('slot-bet').value);
+            if(!bet || bet <= 0 || db.wallets[sessionUser] < bet) return alert('اعتبار ناکافی');
+            db.wallets[sessionUser] -= bet;
+            let icons = ['🥛', '🥤', '🍋'];
+            let r1 = icons[Math.floor(Math.random()*3)], r2 = icons[Math.floor(Math.random()*3)], r3 = icons[Math.floor(Math.random()*3)];
+            document.getElementById('slot-screen').innerText = `${r1} | ${r2} | ${r3}`;
+            let win = (r1 === r2 && r2 === r3);
+            if(win && r1 === '🥛') { db.wallets[sessionUser] += bet * 5; alert('برنده ۵ برابر شدید!'); } 
+            else if(win) { db.wallets[sessionUser] += bet * 3; alert('برنده ۳ برابر شدید!'); } 
+            else { alert('باختید!'); }
+            db.transactions[sessionUser].push({ type: 'اسلات ماشین', amount: win ? bet * 2 : -bet, detail: `گردش اسلات: ${r1}|${r2}|${r3}`, status: 'موفق' });
+            saveDB();
+        }
+
+        // ================= بازی ۸: بلک‌جک =================
+        let userScore = 0, dealerScore = 0, bjBetAmt = 0;
+        function startBJ() {
+            bjBetAmt = parseInt(document.getElementById('bj-bet').value);
+            if(!bjBetAmt || bjBetAmt <= 0 || db.wallets[sessionUser] < bjBetAmt) return alert('موجودی نامعتبر');
+            db.wallets[sessionUser] -= bjBetAmt;
+            userScore = Math.floor(Math.random()*10)+5; dealerScore = Math.floor(Math.random()*10)+5;
+            document.getElementById('bj-user-hand').innerText = userScore;
+            document.getElementById('bj-dealer-hand').innerText = dealerScore;
+            document.getElementById('bj-hit-btn').disabled = false; document.getElementById('bj-stand-btn').disabled = false;
+            document.getElementById('bj-start-btn').disabled = true; saveStateOnly();
+        }
+        function hitBJ() {
+            userScore += Math.floor(Math.random()*10)+2;
+            document.getElementById('bj-user-hand').innerText = userScore;
+            if(userScore > 21) {
+                alert('سوختید (Bust)! مجموع شما بالای ۲۱ رفت.'); endBJ(false);
+            }
+        }
+        function standBJ() {
+            while(dealerScore < 17) { dealerScore += Math.floor(Math.random()*10)+2; }
+            document.getElementById('bj-dealer-hand').innerText = dealerScore;
+            if(dealerScore > 21 || userScore > dealerScore) { endBJ(true); } else { endBJ(false); }
+        }
+        function endBJ(win) {
+            if(win) { db.wallets[sessionUser] += bjBetAmt * 2; alert('برنده شدید! دست برتر متعلق به شماست.'); } else { alert('کازینو برنده شد!'); }
+            db.transactions[sessionUser].push({ type: 'بلک‌جک', amount: win ? bjBetAmt : -bjBetAmt, detail: `امتیاز شما: ${userScore} - امتیاز کازینو: ${dealerScore}`, status: 'پایان' });
+            document.getElementById('bj-hit-btn').disabled = true; document.getElementById('bj-stand-btn').disabled = true;
+            document.getElementById('bj-start-btn').disabled = false; saveDB();
+        }
+
+        // ================= بازی ۹: پلینکو =================
+        function playPlinko() {
+            let bet = parseInt(document.getElementById('plinko-bet').value);
+            if(!bet || bet <= 0 || db.wallets[sessionUser] < bet) return alert('موجودی کافی نیست');
+            db.wallets[sessionUser] -= bet;
+            let ball = document.getElementById('plinko-ball-id'); ball.style.top = '10px'; ball.style.left = '50%';
+            
+            setTimeout(() => {
+                let paths = ['15%', '33%', '50%', '66%', '85%'];
+                let mults = [0.2, 0.5, 1.5, 0.5, 0.2];
+                let r = Math.floor(Math.random() * 5);
+                ball.style.top = '180px'; ball.style.left = paths[r];
+                
+                setTimeout(() => {
+                    let win = Math.floor(bet * mults[r]); db.wallets[sessionUser] += win;
+                    db.transactions[sessionUser].push({ type: 'پلینکو', amount: (win - bet), detail: `فرود توپ در خانه ضریب ${mults[r]}x`, status: 'موفق' });
+                    alert(`توپ فرود آمد! ضریب: ${mults[r]}x. جایزه: ${win} دوغ`); saveDB();
+                }, 300);
+            }, 200);
+        }
+
+        // ================= بازی ۱۰: بالاتر یا پایین‌تر =================
+        let currentCardNum = 5;
+        function playHL(prediction) {
+            let bet = parseInt(document.getElementById('hl-bet').value);
+            if(!bet || bet <= 0 || db.wallets[sessionUser] < bet) return alert('موجودی ناکافی');
+            db.wallets[sessionUser] -= bet;
+            let nextCard = Math.floor(Math.random() * 10) + 1;
+            let win = (prediction === 'higher' && nextCard >= currentCardNum) || (prediction === 'lower' && nextCard <= currentCardNum);
+            if(win) { db.wallets[sessionUser] += bet * 2; alert(`بردید! کارت جدید ${nextCard} بود.`); } else { alert(`باختید! کارت جدید ${nextCard} بود.`); }
+            db.transactions[sessionUser].push({ type: 'بالا یا پایین', amount: win ? bet : -bet, detail: `کارت قبلی: ${currentCardNum} | حدس: ${prediction} | کارت جدید: ${nextCard}`, status: 'موفق' });
+            currentCardNum = nextCard; document.getElementById('hl-card-display').innerText = `کارت فعلی: ${currentCardNum}`;
+            saveDB();
+        }
+
+        // بارگذاری اولیه سیستم
+        checkAuth();
+    </script>
+</body>
+</html>
